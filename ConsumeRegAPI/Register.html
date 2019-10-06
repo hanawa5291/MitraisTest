@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<link href="Content/Site.css" rel="stylesheet" />
+	<link href="Content/bootstrap.css" rel="stylesheet" />
+
+	<script src="Scripts/angular.min.js"></script>
+	<script src="Scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+	<div >
+		<div class="form-horizontal">
+
+			<h4>Registration</h4>
+			<hr />
+
+			<div class="form-group">
+				<label class="control-label col-md-2">Mobile Number</label>
+				<div class="col-md-10">
+					<input type="text" class="form-control" id="MobileNumber"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-md-2">First Name</label>
+				<div class="col-md-10">
+					<input type="text" class="form-control" id="FirstName"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-md-2">Last Name</label>
+				<div class="col-md-10">
+					<input type="text" class="form-control" id="LastName" />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-md-2">Birth Date</label>
+				<div class="col-md-10">
+					<select id="dateBirth">
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+
+					<select id="monthBirth">
+						<option value="1">Jan</option>
+						<option value="2">Feb</option>
+					</select>
+
+					<select id="yearBirth">
+						<option value="1991">1991</option>
+						<option value="1992">1992</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-md-2">Gender</label>
+				<div class="col-md-10">
+					<div>
+						<label class="radio-inline"><input type="radio" name="Gender" value="Male">Male</label>
+						<label class="radio-inline"><input type="radio" name="Gender" value="Female">Female</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-md-2">Email</label>
+				<div class="col-md-10">
+					<input type="text" class="form-control" id="Email"/>
+
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-offset-2 col-md-10">
+					<!--<input type="button" ng-click="Add()" value="Register"  class="btn-primary"/>-->
+					<button id="btnRegister" class="btn btn-primary" onclick="javacript:Register()">Register</button>
+
+				</div>
+			</div>
+			<button id="btnLogin" class="btn btn-primary" onclick="javacript:Login()">Login</button>
+		</div>
+	</div>
+	
+
+
+	
+
+	<script type="text/javascript">
+		var RegUrl = "http://localhost:51961/api/values/Post";
+		var param = RegisterParam();
+		//var app = angular.module('MyApp', [])
+		//app.controller('MyController', function ($scope, $http, $window) {
+		//	$scope.Add = function () {
+		//		var post = $http({
+		//			method: "POST",
+		//			url: RegUrl,
+		//			data: JSON.stringify(param),
+		//			dataType: 'json',
+		//			headers: { "Content-Type": "application/json" }
+		//		});
+		//		post.success(function (data, status) {
+
+		//			$scope.Registers.push(data)
+		//		});
+
+		//	};
+		//});
+			
+		
+		function Register() {
+			$.ajax({
+				type: "POST",
+				url: RegUrl,
+				dataType: 'json',
+				contentType: 'application/json',
+				data: JSON.stringify(param)
+				, succes: function (result) {
+					alert(result);
+					$("#btnLogin").prop("disable", false);
+				}
+			});
+		}
+			
+			
+	
+		function RegisterParam() {
+			var newBirth = $("#dateBirth").val() + "/" + $("#monthBirth").val() + "/" + $("#yearBirth").val();
+			return {
+				MobileNumber: $("#MobileNumber").val(),
+				FirstName: $("#FirstName").val(),
+				LastName: $("#LastName").val(),
+				BirthDate: newBirth,
+				Gender: $("Gender").val(),
+				Email: $("#Email").val()
+			}
+
+		}
+
+	</script>
+
+</body>
+</html>

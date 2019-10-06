@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<link href="/Content/Site.css" rel="stylesheet" />
+	<link href="/Content/bootstrap.min.css" rel="stylesheet" />
+	<script src="../../Scripts/bootstrap.min.js"></script>
+
+	<script src="/Scripts/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+
+
+		</div>
+	</div>
+	<div class="container body-content">
+		<div class="form-horizontal">
+
+			<h4>Registration</h4>
+			<hr />
+
+			<div class="form-group">
+
+				<div class="col-md-10">
+					<div class="alert alert-danger mobnum col-md-5" hidden="hidden">Please Enter Valid Indonesian Number</div>
+					<input type="text" class="form-control" id="txtMobileNumber" onchange="CheckValidIndonesiaNumber()" placeholder="Mobile Number" required />
+				</div>
+			</div>
+
+			<div class="form-group">
+
+				<div class="col-md-10">
+					<input type="text" class="form-control" id="txtFirstName" placeholder="First Name" required />
+				</div>
+			</div>
+
+			<div class="form-group">
+
+				<div class="col-md-10">
+					<input type="text" class="form-control" id="txtLastName" placeholder="Last Name" required />
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="control-label col-md-2">Date of Birth</label>
+				<div class="col-md-10">
+					<select id="dateBirth">
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+
+					<select id="monthBirth">
+						<option value="1">January</option>
+						<option value="2">February</option>
+					</select>
+
+					<select id="yearBirth">
+						<option value="1991">1991</option>
+						<option value="1992">1992</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+
+				<div class="col-md-10">
+					<div>
+						<label class="radio-inline"><input type="radio" id="txtGender" value="Male" checked="checked">Male</label>
+						<label class="radio-inline"><input type="radio" id="txtGender" value="Female">Female</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+
+				<div class="col-md-10">
+					<div class="alert alert-danger ckemail" hidden="hidden">Emailnot valid</div>
+					<input type="text" class="form-control" id="txtEmail" onchange="ValidateEmail()" placeholder="Email" required />
+
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-offset-2 col-md-10">
+					<!--<input type="button" ng-click="Add()" value="Register"  class="btn-primary"/>-->
+					<button id="btnRegister" class="btn btn-primary btn-block btn-lg col-md-5" onclick="javacript:Register()">Register</button>
+
+				</div>
+			</div>
+			<button id="btnLogin" class="btn btn-primary btn-block btn-lg col-md-5" onclick="javacript:Login()">Login</button>
+		</div>
+	</div>
+
+
+
+
+
+	<script type="text/javascript">
+		var RegUrl = "http://localhost:51961/api/values/Post";
+
+
+
+		function Register() {
+			var param = RegisterParam();
+			var isValid = ValidateInput();
+			if (!isValid) {
+				$.ajax({
+					type: "POST",
+					url: RegUrl,
+					dataType: 'json',
+					contentType: 'application/json',
+					data: JSON.stringify(param),
+					success: function (result) {
+						alert(result);
+						$("#btnRegister").prop("disabled", true);
+						$("#btnLogin").prop("disabled", false);
+					},
+					error: function (result) {
+						alert(result);
+					}
+				});
+			}
+
+		}
+
+
+		function CheckValidIndonesiaNumber() {
+			var str = $("#txtMobileNumber").val();
+			var patt = /^62\d{7,11}$/;
+			var res = patt.test(str);
+			if (res == false) {
+				$(".mobnum").removeAttr("hidden");
+				console.log("false");
+			} else {
+				$(".mobnum").attr("hidden", true);
+				console.log("true");
+			}
+		}
+
+
+		function ValidateEmail() {
+			var str = $("#txtEmail").val();
+			var patt = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			var res = patt.test(str);
+			if (res == false) {
+				$(".ckemail").removeAttr("hidden");
+				console.log("false");
+			} else {
+				$(".ckemail").attr("hidden", true);
+				console.log("true");
+			}
+		}
+		function Login() {
+			return;
+		}
+
+		function RegisterParam() {
+			var newBirth = $("#dateBirth").val() + "/" + $("#monthBirth").val() + "/" + $("#yearBirth").val();
+			return {
+				MobileNumber: $("#txtMobileNumber").val(),
+				FirstName: $("#txtFirstName").val(),
+				LastName: $("#txtLastName").val(),
+				BirthDate: newBirth,
+				Gender: $("#txtGender").val(),
+				Email: $("#txtEmail").val()
+			}
+
+		}
+
+		function ValidateInput() {
+			if (
+				$("#txtEmail").val() == "" ||
+				$("#txtFirstName").val() == "" ||
+				$("#txtLastName").val() == "" ||
+				$("#txtMobileNumber").val() == ""
+			) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+	</script>
+
+</body>
+</html>

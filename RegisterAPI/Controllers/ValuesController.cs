@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-
+using RegisterAPI.Models;
+using System.Web.Http.Cors;
 namespace RegisterAPI.Controllers
 {
 	public class ValuesController : ApiController
 	{
+		private RegisterRepo regRepo = new RegisterRepo();
 		// GET api/values
 		public IEnumerable<string> Get()
 		{
@@ -22,8 +24,12 @@ namespace RegisterAPI.Controllers
 		}
 
 		// POST api/values
-		public void Post([FromBody]string value)
+		[HttpPost]
+		public string Post([FromBody]RegisterModel value)
 		{
+			string result = "";
+			result = regRepo.RegisterNew(value);
+			return result;
 		}
 
 		// PUT api/values/5
