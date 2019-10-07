@@ -5,7 +5,7 @@
 	<title></title>
 	<link href="/Content/Site.css" rel="stylesheet" />
 	<link href="/Content/bootstrap.min.css" rel="stylesheet" />
-	<script src="../../Scripts/bootstrap.min.js"></script>
+
 
 	<script src="/Scripts/jquery-3.4.1.min.js"></script>
 </head>
@@ -16,8 +16,8 @@
 
 		</div>
 	</div>
-	<div class="container body-content">
-		<div class="form-horizontal">
+	<div class="container body-content"">
+		<div class="form-horizontal"  id="regform">
 
 			<h4>Registration</h4>
 			<hr />
@@ -47,20 +47,11 @@
 			<div class="form-group">
 				<label class="control-label col-md-2">Date of Birth</label>
 				<div class="col-md-10">
-					<select id="dateBirth">
-						<option value="1">1</option>
-						<option value="2">2</option>
-					</select>
+					<select id="dateBirth"></select>
 
-					<select id="monthBirth">
-						<option value="1">January</option>
-						<option value="2">February</option>
-					</select>
+					<select id="monthBirth"></select>
 
-					<select id="yearBirth">
-						<option value="1991">1991</option>
-						<option value="1992">1992</option>
-					</select>
+					<select id="yearBirth"></select>
 				</div>
 			</div>
 
@@ -68,8 +59,8 @@
 
 				<div class="col-md-10">
 					<div>
-						<label class="radio-inline"><input type="radio" id="txtGender" value="Male" checked="checked">Male</label>
-						<label class="radio-inline"><input type="radio" id="txtGender" value="Female">Female</label>
+						<label class="radio-inline"><input type="radio" name="txtGender" value="Male">Male</label>
+						<label class="radio-inline"><input type="radio" name="txtGender" value="Female">Female</label>
 					</div>
 				</div>
 			</div>
@@ -77,7 +68,7 @@
 			<div class="form-group">
 
 				<div class="col-md-10">
-					<div class="alert alert-danger ckemail" hidden="hidden">Emailnot valid</div>
+					<div class="alert alert-danger ckemail" hidden="hidden">Email not valid</div>
 					<input type="text" class="form-control" id="txtEmail" onchange="ValidateEmail()" placeholder="Email" required />
 
 				</div>
@@ -90,8 +81,19 @@
 
 				</div>
 			</div>
-			<button id="btnLogin" class="btn btn-primary btn-block btn-lg col-md-5" onclick="javacript:Login()">Login</button>
+
 		</div>
+	</div>
+
+	<div class="container body-content loginform">
+		<div class="form-horizontal">
+			<div class="form-group">
+				<div class="col-md-offset-2 col-md-10">
+					<button id="btnLogin" class="btn btn-primary btn-block btn-lg col-md-5" onclick="javacript:Login()" hidden="hidden">Login</button>
+				</div>
+			</div>
+		</div>
+
 	</div>
 
 
@@ -102,11 +104,72 @@
 		var RegUrl = "http://localhost:51961/api/values/Post";
 
 
+		$(document).ready(function () {
+
+			const monthNames = ["January", "February", "March", "April", "May", "June",
+				"July", "August", "September", "October", "November", "December"
+			];
+			var qntYears = 70;
+			var selectYear = $("#yearBirth");
+			var selectMonth = $("#monthBirth");
+			var selectDay = $("#dateBirth");
+			var currentYear = new Date().getFullYear();
+
+			for (var y = 0; y < qntYears; y++) {
+				let date = new Date(currentYear);
+				var yearElem = document.createElement("option");
+				yearElem.value = currentYear
+				yearElem.textContent = currentYear;
+				selectYear.append(yearElem);
+				currentYear--;
+			}
+
+			for (var m = 0; m < 12; m++) {
+				let monthNum = new Date(2018, m).getMonth()
+				let month = monthNames[monthNum];
+				var monthElem = document.createElement("option");
+				monthElem.value = monthNum;
+				monthElem.textContent = month;
+				selectMonth.append(monthElem);
+			}
+
+			var d = new Date();
+			var month = d.getMonth();
+			var year = d.getFullYear();
+			var day = d.getDate();
+
+			selectYear.val(year);
+			selectYear.on("change", AdjustDays);
+			selectMonth.val(month);
+			selectMonth.on("change", AdjustDays);
+
+			AdjustDays();
+			selectDay.val(day)
+
+			function AdjustDays() {
+				var year = selectYear.val();
+				var month = parseInt(selectMonth.val()) + 1;
+				selectDay.empty();
+
+				//get the last day, so the number of days in that month
+				var days = new Date(year, month, 0).getDate();
+
+				//lets create the days of that month
+				for (var d = 1; d <= days; d++) {
+					var dayElem = document.createElement("option");
+					dayElem.value = d;
+					dayElem.textContent = d;
+					selectDay.append(dayElem);
+				}
+			}
+		});
+
 
 		function Register() {
 			var param = RegisterParam();
 			var isValid = ValidateInput();
-			if (!isValid) {
+			console.log(isValid);
+			if (isValid) {
 				$.ajax({
 					type: "POST",
 					url: RegUrl,
@@ -115,8 +178,9 @@
 					data: JSON.stringify(param),
 					success: function (result) {
 						alert(result);
-						$("#btnRegister").prop("disabled", true);
-						$("#btnLogin").prop("disabled", false);
+						$("#regform").prop("disabled",true);
+						//SuccessRegister();
+						$("#btnLogin").removeAttr("hidden");
 					},
 					error: function (result) {
 						alert(result);
@@ -126,6 +190,17 @@
 
 		}
 
+		function SuccessRegister() {
+			$("#yearBirth").prop("disabled", true);
+			$("#monthBirth").prop("disabled", true);
+			$("#dateBirth").prop("disabled", true);
+			$("#txtMobileNumber").prop("disabled", true);
+			$("#txtEmail").prop("disabled", true);
+			$("#txtFirstName").prop("disabled", true);
+			$("#txtLastName").prop("disabled", true);
+			$("#btnRegister").prop("disabled", true);
+
+		}
 
 		function CheckValidIndonesiaNumber() {
 			var str = $("#txtMobileNumber").val();
@@ -164,7 +239,7 @@
 				FirstName: $("#txtFirstName").val(),
 				LastName: $("#txtLastName").val(),
 				BirthDate: newBirth,
-				Gender: $("#txtGender").val(),
+				Gender: $("input[name=txtGender]:checked").val(),
 				Email: $("#txtEmail").val()
 			}
 
