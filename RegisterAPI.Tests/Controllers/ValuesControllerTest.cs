@@ -21,11 +21,12 @@ namespace RegisterAPI.Tests.Controllers
 		{
 			RegisterModel mod = new RegisterModel();
 			mod = Reg();
+			
 			// Arrange
 			ValuesController controller = new ValuesController();
 			string result="";
 			// Act
-			result =controller.Post(mod);
+			result =controller.Post(mod) as string;
 
 			// Assert
 			Assert.IsNotNull(result);

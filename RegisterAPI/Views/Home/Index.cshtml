@@ -1,125 +1,51 @@
 ﻿@model RegisterAPI.Models.RegisterModel
+
 @{
-    ViewBag.Title = "Index";
+
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+
+
+@using (Html.BeginForm()) 
+{
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Registration</h4>
+        <h4>Login</h4>
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        
         <div class="form-group">
-            @Html.LabelFor(model => model.MobileNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label>User Name</label>
             <div class="col-md-10">
-                @Html.ValidationMessageFor(model => model.MobileNumber, "", new { @class = "text-danger" })
-                @Html.EditorFor(model => model.MobileNumber, new { htmlAttributes = new { @class = "form-control" } })
+                <input type="text" class="form-control" id="txtUserID"/>
                 
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label>Password</label>
             <div class="col-md-10">
-                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                <input type="password" class="form-control" id="txtPassword"/>
                 
             </div>
         </div>
+
+       
 
         <div class="form-group">
-            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Login" class="btn btn-primary" />
             </div>
         </div>
+    </div>
+}
 
-      	<div class="form-group">
-				<label class="control-label col-md-2">Birth Date</label>
-				<div class="col-md-10">
-					<select id="dateBirth">
-						<option value="1">1</option>
-						<option value="2">2</option>
-					</select>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
 
-					<select id="monthBirth">
-						<option value="1">Jan</option>
-						<option value="2">Feb</option>
-					</select>
-
-					<select id="yearBirth">
-						<option value="1991">1991</option>
-						<option value="1992">1992</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label class="control-label col-md-2">Gender</label>
-				<div class="col-md-10">
-					<div>
-						<label class="radio-inline"><input type="radio" id="Gender" value="Male" selected="selected">Male</label>
-						<label class="radio-inline"><input type="radio" id="Gender" value="Female">Female</label>
-					</div>
-				</div>
-			</div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                
-            </div>
-        </div>
-
-      	<div class="form-group">
-				<div class="col-md-offset-2 col-md-10">
-					
-					<button id="btnRegister" class="btn btn-primary" onclick="javacript:Register()">Register</button>
-
-				</div>
-			</div>
-			<button id="btnLogin" class="btn btn-primary" onclick="javacript:Login()">Login</button>
-		</div>
-
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script type="text/javascript">
-		var RegUrl = "http://localhost:51961/api/values/Post";
-		var param = RegisterParam();
-		function Register() {
-			$.ajax({
-				type: "POST",
-				url: RegUrl,
-				dataType: 'json',
-				contentType: 'application/json',
-				data: JSON.stringify(param)
-				, succes: function (result) {
-					alert(result);
-					$("#btnLogin").prop("disable", false);
-					$("#btnRegister").prop("disable", true);
-				}
-			});
-		}
-			
-			
-	
-		function RegisterParam() {
-			var newBirth = $("#dateBirth").val() + "/" + $("#monthBirth").val() + "/" + $("#yearBirth").val();
-			var Mnumber =$("#MobileNumber").val();
-			return {
-				MobileNumber:Mnumber ,
-				FirstName: $("#FirstName").val(),
-				LastName: $("#LastName").val(),
-				BirthDate: newBirth,
-				Gender: $("#Gender").val(),
-				Email: $("#Email").val()
-			}
-
-		}
-
-	</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
